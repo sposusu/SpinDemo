@@ -34,8 +34,8 @@
         document.body.appendChild( containerElement );
 
         const renderer = new THREE.WebGLRenderer();
-        // const serverUrl = 'http://127.0.0.1:8080';
-        const serverUrl = 'https://sposusu.github.io/SpinDemo/';
+        const serverUrl = 'http://127.0.0.1:8080';
+        // const serverUrl = 'https://sposusu.github.io/SpinDemo/';
 
         renderer.setSize( container.width , container.height  );
         containerElement.appendChild( renderer.domElement );
@@ -116,6 +116,7 @@
 
             const yQuaternion = new THREE.Quaternion();
             var yax = new THREE.Vector3(axisList[0], axisList[1], axisList[2]);
+            yax = new THREE.Vector3(axisList[0]/yax.length(), axisList[1]/yax.length(), axisList[2]/yax.length());
             pivot.rotateOnWorldAxis(yax, rpm/50000);
             // Multiply the ellipse's rotation with the y-axis rotation
             // cube.quaternion.multiply(yQuaternion);
@@ -135,6 +136,7 @@
             var axis = document.getElementById('axis').value;
             axis = axis.substring(1, axis.length - 1); // cut out the brackets
             axisList = axis.split(" ").filter(function(i){return true;}).map(Number);
+
             console.log(axisList);
             rpm = document.getElementById('rpm').value;
             console.log(rpm);
