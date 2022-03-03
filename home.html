@@ -154,14 +154,34 @@
             console.log(initialStateList);
             resetFlag = true;
         }
+        function setForm(rpm, axis, seamSample) {
+            document.getElementById('rpm').value = rpm;
+            document.getElementById('axis').value = axis;
+            document.getElementById('initialState').value = seamSample;
+            document.getElementById('submitParamBtn').click();
+        }
+
+        var data;        
+        const hashData = new Map();
+        var spinRpm_position, axis_position, seamSample_position;
 
         function showBallByDate() {
             var pitch_date = document.getElementById('pitch_date').value;
             var pitch_id = document.getElementById('pitch_id').value;
             console.log(initialStateList);
+            try {
+                key = pitch_date + "-" + pitch_id;
+                ball = hashData.get(key);
+                document.getElementById('ballInfo').innerHTML = ball;
+
+                setForm(ball[spinRpm_position], ball[axis_position], ball[seamSample_position]);
+            }
+            catch (e) {
+
+            }
+
         }
 
-        var data;        
 
         function handleFiles(files) {
             console.log(files[0]);
@@ -169,8 +189,18 @@
             fr.onload=function(){
                 data = $.csv.toArrays(fr.result);
                 console.log(data);
+                // To HashMap
+                data.forEach(value => {
+                    hashData.set(value[0] + "-" + value[2], value);
+                });
+                // get position
+                spinRpm_position = data[0].findIndex(x => x === "SpinRpm");
+                axis_position= data[0].findIndex(x => x === "Axis"); 
+                seamSample_position= data[0].findIndex(x => x === "SeamSample");
             }
+            fr.readAsText(files[0]);
         }
+
     </script>
 	<body>
         <div id="container" style="float:left;width:50%;height:100vh">
@@ -185,7 +215,7 @@
                 <input type="text" id="initialState" name="initialState" size="40" value="[0 0 0]"><br><br>
                 <label for="rpm">rpm: </label>
                 <input type="number" id="rpm" name="rpm" value="1000"><br><br>
-                <input type="button" value="Submit" onclick="setParams()">
+                <input type="button" id="submitParamBtn", value="Submit" onclick="setParams()">
               </form>
               <input type="file" id="input" onchange="handleFiles(this.files)">
               <form id="form_id" submit="">
@@ -195,7 +225,9 @@
                 <input type="number" id="pitch_id" name="pitch_id" value=10><br><br>
                 <input type="button" value="search" onclick="showBallByDate()">
               </form>
+              <p id="ballInfo"></p>
         </div>
+
        
 	</body>
 </html>
