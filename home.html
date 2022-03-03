@@ -10,6 +10,7 @@
 
 	</head>
     <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+    <script src="jquery-csv.js"></script>
     <script>
         // Params 
         var axisList = [0, 1, 0];
@@ -21,7 +22,8 @@
         import * as THREE from 'https://cdn.skypack.dev/three@0.129.0'
         import {OBJLoader} from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/OBJLoader.js'
         import {MTLLoader} from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/MTLLoader.js'
-        import { STLLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/STLLoader'
+        import { FBXLoader } from 'https://cdn.skypack.dev/three@0.129.0/examples/jsm/loaders/FBXLoader.js'
+
         var containerElement = document.getElementById('container');
 
         var container = document.getElementById('container').getBoundingClientRect();
@@ -45,27 +47,32 @@
         var cube;
         var mtlLoader = new MTLLoader();
 
-        mtlLoader.load( serverUrl + '/assets/10483_baseball_v1_L3.mtl', function( materials ) {
+        // mtlLoader.load( serverUrl + '/assets/Baseball.mtl', function( materials ) {
+        //mtlLoader.load( serverUrl + '/assets/Baseball.mtl', function( materials ) {
 
-        materials.preload();
+        // materials.preload();
 
-        var objLoader = new OBJLoader();
+        // var objLoader = new OBJLoader();
+        var objLoader = new FBXLoader();
         // var objLoader = new STLLoader()
-        objLoader.setMaterials( materials );
+        // objLoader.setMaterials( materials );
         // instantiate a loader
         // load a resource
         objLoader.load(
             // resource URL
-            serverUrl + '/assets/10483_baseball_v1_L3.obj',
+            serverUrl + '/assets/Baseball.fbx',
             // called when resource is loaded
             function ( object ) {
-                var texture = new THREE.TextureLoader().load( serverUrl +'/assets/10483_baseball_diffuse.jpg');
-
+                var texture = new THREE.TextureLoader().load( serverUrl +'/assets/Baseball_Color.jpg');
+                
                 object.traverse(function (child) {   // aka setTexture
                     if (child instanceof THREE.Mesh) {
+                        console.log("adding matrial!!!!!")
                         child.material.map = texture;
+                        // child.material.append
                     }
                 });
+                
                 cube = object;
                 box = new THREE.Box3().setFromObject( cube );
                 box.getCenter( cube.position ); // this re-sets the mesh position
@@ -73,6 +80,7 @@
                 pivot = new THREE.Group();
                 scene.add( pivot );
                 pivot.add(cube);
+                console.log(object);
                 // Calibrate ball to our rotation model
                 // pivot.rotation.setFromVector3(new THREE.Vector3( 0, 0, Math.PI));
             },
@@ -89,14 +97,14 @@
 
             }
         );
-        });
+        // });
 
         // const geometry = new THREE.BoxGeometry();
         // const material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
         // cube = new THREE.Mesh( geometry, material );
         // scene.add( cube );
         // camera.position.z = 50;
-        camera.position.x = 50;
+        camera.position.x = 20;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
 
 
@@ -146,6 +154,23 @@
             console.log(initialStateList);
             resetFlag = true;
         }
+
+        function showBallByDate() {
+            var pitch_date = document.getElementById('pitch_date').value;
+            var pitch_id = document.getElementById('pitch_id').value;
+            console.log(initialStateList);
+        }
+
+        var data;        
+
+        function handleFiles(files) {
+            console.log(files[0]);
+            var fr=new FileReader();
+            fr.onload=function(){
+                data = $.csv.toArrays(fr.result);
+                console.log(data);
+            }
+        }
     </script>
 	<body>
         <div id="container" style="float:left;width:50%;height:100vh">
@@ -161,6 +186,14 @@
                 <label for="rpm">rpm: </label>
                 <input type="number" id="rpm" name="rpm" value="1000"><br><br>
                 <input type="button" value="Submit" onclick="setParams()">
+              </form>
+              <input type="file" id="input" onchange="handleFiles(this.files)">
+              <form id="form_id" submit="">
+                <label for="pitch_date">Pitch Date: </label>
+                <input type="text" id="pitch_date" name="pitch_date" size="40" value="21-0330"><br><br>
+                <label for="pitch_id">Pitch ID: </label>
+                <input type="number" id="pitch_id" name="pitch_id" value=10><br><br>
+                <input type="button" value="search" onclick="showBallByDate()">
               </form>
         </div>
        
