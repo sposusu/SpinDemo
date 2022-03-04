@@ -106,12 +106,18 @@
         // camera.position.z = 50;
         camera.position.x = 20;
         camera.lookAt(new THREE.Vector3(0, 0, 0));
-
+        var geometry = new THREE.CylinderGeometry( 0.5, 0.5, 15, 32 );
+        var material = new THREE.MeshBasicMaterial( {color: 0x555555} );
+        var cylinder = new THREE.Mesh( geometry, material );
+        scene.add( cylinder );
 
         let ambientLight = new THREE.AmbientLight(0xffffff)
         scene.add(ambientLight)
         var animate = function () {
             requestAnimationFrame( animate );
+            var yax = new THREE.Vector3(axisList[0], axisList[1], axisList[2]);
+            yax = new THREE.Vector3(axisList[0]/yax.length(), axisList[1]/yax.length(), axisList[2]/yax.length());
+            console.log(yax);
             if (resetFlag) {
                 // 球跟我們定義的原點是上下顛倒的
                 pivot.rotation.setFromVector3(new THREE.Vector3(Math.PI, 0, 0));
@@ -121,14 +127,13 @@
                 pivot.rotateX(initialStateList[0]/180 *Math.PI);
                 pivot.rotateY(initialStateList[1]/180 *Math.PI);
                 pivot.rotateZ(initialStateList[2]/180 *Math.PI);
+                var original_cylinder = new THREE.Vector3(0, 1, 0);
+                cylinder.quaternion.setFromUnitVectors(original_cylinder, yax.clone().normalize());
+
                 resetFlag = false;
             }
 
             const yQuaternion = new THREE.Quaternion();
-            var yax = new THREE.Vector3(axisList[0], axisList[1], axisList[2]);
-            console.log(yax);
-
-            yax = new THREE.Vector3(axisList[0]/yax.length(), axisList[1]/yax.length(), axisList[2]/yax.length());
             console.log(yax);
 
             pivot.rotateOnWorldAxis(yax, rpm/50000);
