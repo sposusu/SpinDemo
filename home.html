@@ -113,8 +113,10 @@
         var animate = function () {
             requestAnimationFrame( animate );
             if (resetFlag) {
-                // pivot.rotation.setFromVector3(new THREE.Vector3( 0, 0, Math.PI));
-                pivot.rotation.setFromVector3(new THREE.Vector3( 0, 0, 0));
+                // 球跟我們定義的原點是上下顛倒的
+                pivot.rotation.setFromVector3(new THREE.Vector3(Math.PI, 0, 0));
+                
+                // pivot.rotation.setFromVector3(new THREE.Vector3( 0, 0, 0));
 
                 pivot.rotateX(initialStateList[0]/180 *Math.PI);
                 pivot.rotateY(initialStateList[1]/180 *Math.PI);
