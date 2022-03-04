@@ -124,7 +124,11 @@
 
             const yQuaternion = new THREE.Quaternion();
             var yax = new THREE.Vector3(axisList[0], axisList[1], axisList[2]);
+            console.log(yax);
+
             yax = new THREE.Vector3(axisList[0]/yax.length(), axisList[1]/yax.length(), axisList[2]/yax.length());
+            console.log(yax);
+
             pivot.rotateOnWorldAxis(yax, rpm/50000);
             // Multiply the ellipse's rotation with the y-axis rotation
             // cube.quaternion.multiply(yQuaternion);
@@ -143,14 +147,14 @@
             var form = document.getElementById('form');
             var axis = document.getElementById('axis').value;
             axis = axis.substring(1, axis.length - 1); // cut out the brackets
-            axisList = axis.split(" ").filter(function(i){return true;}).map(Number);
+            axisList = axis.split(" ").filter(function(i){return i;}).map(Number);
 
             console.log(axisList);
             rpm = document.getElementById('rpm').value;
             console.log(rpm);
             var initialState = document.getElementById('initialState').value;
             initialState = initialState.substring(1, initialState.length - 1); // cut out the brackets
-            initialStateList = initialState.split(" ").filter(function(i){return true;}).map(Number);
+            initialStateList = initialState.split(" ").filter(function(i){return i;}).map(Number);
             console.log(initialStateList);
             resetFlag = true;
         }
