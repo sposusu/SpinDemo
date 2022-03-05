@@ -117,16 +117,33 @@
             requestAnimationFrame( animate );
             var yax = new THREE.Vector3(axisList[0], axisList[1], axisList[2]);
             yax = new THREE.Vector3(axisList[0]/yax.length(), axisList[1]/yax.length(), axisList[2]/yax.length());
-            console.log(yax);
+            // console.log(yax);
             if (resetFlag) {
                 // 球跟我們定義的原點是上下顛倒的
                 pivot.rotation.setFromVector3(new THREE.Vector3(Math.PI, 0, 0));
                 
                 // pivot.rotation.setFromVector3(new THREE.Vector3( 0, 0, 0));
 
-                pivot.rotateX(initialStateList[0]/180 *Math.PI);
-                pivot.rotateY(initialStateList[1]/180 *Math.PI);
-                pivot.rotateZ(initialStateList[2]/180 *Math.PI);
+                // pivot.rotateX(initialStateList[0]/180 *Math.PI);
+                // pivot.rotateY(initialStateList[1]/180 *Math.PI);
+                // pivot.rotateZ(initialStateList[2]/180 *Math.PI);
+                var a = new THREE.Euler( 
+                    initialStateList[0]/180 *Math.PI, 
+                    initialStateList[1]/180 *Math.PI, 
+                    initialStateList[2]/180 *Math.PI,
+                     'XYZ' 
+                     );
+                var initQuaterion = new THREE.Quaternion();
+                initQuaterion.setFromEuler(a);
+                var initAxisAngle= new THREE.Vector4()
+                initAxisAngle.setAxisAngleFromQuaternion(initQuaterion);
+                var initAxis =  new THREE.Vector3(initAxisAngle[0], initAxisAngle[1], initAxisAngle[2]);
+                if (initAxis.length() !== 0) {
+                    initAxis.normalize();
+                    console.log(initAxis);
+                    console.log(initAxis.length());
+                    pivot.rotateOnWorldAxis(initAxis, initAxisAngle[3]);
+                }
                 var original_cylinder = new THREE.Vector3(0, 1, 0);
                 cylinder.quaternion.setFromUnitVectors(original_cylinder, yax.clone().normalize());
 
@@ -134,7 +151,7 @@
             }
 
             const yQuaternion = new THREE.Quaternion();
-            console.log(yax);
+            // console.log(yax);
 
             pivot.rotateOnWorldAxis(yax, rpm/50000);
             // Multiply the ellipse's rotation with the y-axis rotation
