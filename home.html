@@ -135,14 +135,19 @@
                      );
                 var initQuaterion = new THREE.Quaternion();
                 initQuaterion.setFromEuler(a);
+                console.log(initQuaterion);
+
                 var initAxisAngle= new THREE.Vector4()
                 initAxisAngle.setAxisAngleFromQuaternion(initQuaterion);
-                var initAxis =  new THREE.Vector3(initAxisAngle[0], initAxisAngle[1], initAxisAngle[2]);
+                console.log(initAxisAngle);
+
+                var initAxis =  new THREE.Vector3(initAxisAngle.x, initAxisAngle.y, initAxisAngle.z);
                 if (initAxis.length() !== 0) {
                     initAxis.normalize();
                     console.log(initAxis);
                     console.log(initAxis.length());
-                    pivot.rotateOnWorldAxis(initAxis, initAxisAngle[3]);
+                    console.log(initAxisAngle.w);
+                    pivot.rotateOnWorldAxis(initAxis, initAxisAngle.w);
                 }
                 var original_cylinder = new THREE.Vector3(0, 1, 0);
                 cylinder.quaternion.setFromUnitVectors(original_cylinder, yax.clone().normalize());
