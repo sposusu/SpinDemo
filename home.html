@@ -127,28 +127,44 @@
                 // pivot.rotateX(initialStateList[0]/180 *Math.PI);
                 // pivot.rotateY(initialStateList[1]/180 *Math.PI);
                 // pivot.rotateZ(initialStateList[2]/180 *Math.PI);
-                var a = new THREE.Euler( 
+                var x = new THREE.Euler( 
                     initialStateList[0]/180 *Math.PI, 
-                    initialStateList[1]/180 *Math.PI, 
-                    initialStateList[2]/180 *Math.PI,
+                    0, 
+                    0,
                      'XYZ' 
                      );
-                var initQuaterion = new THREE.Quaternion();
-                initQuaterion.setFromEuler(a);
-                console.log(initQuaterion);
+                var y = new THREE.Euler( 
+                0, 
+                initialStateList[1]/180 *Math.PI, 
+                0,
+                    'XYZ' 
+                );
+                var z = new THREE.Euler( 
+                0, 
+                0, 
+                initialStateList[2]/180 *Math.PI,
+                    'XYZ' 
+                );
+                var rs = [x, y, z];
+                for (let i = 0; i < rs.length; i++) {
+                    var initQuaterion = new THREE.Quaternion();
+                    initQuaterion.setFromEuler(rs[i]);
+                    console.log(initQuaterion);
 
-                var initAxisAngle= new THREE.Vector4()
-                initAxisAngle.setAxisAngleFromQuaternion(initQuaterion);
-                console.log(initAxisAngle);
+                    var initAxisAngle= new THREE.Vector4()
+                    initAxisAngle.setAxisAngleFromQuaternion(initQuaterion);
+                    console.log(initAxisAngle);
 
-                var initAxis =  new THREE.Vector3(initAxisAngle.x, initAxisAngle.y, initAxisAngle.z);
-                if (initAxis.length() !== 0) {
-                    initAxis.normalize();
-                    console.log(initAxis);
-                    console.log(initAxis.length());
-                    console.log(initAxisAngle.w);
-                    pivot.rotateOnWorldAxis(initAxis, initAxisAngle.w);
+                    var initAxis =  new THREE.Vector3(initAxisAngle.x, initAxisAngle.y, initAxisAngle.z);
+                    if (initAxis.length() !== 0) {
+                        initAxis.normalize();
+                        console.log(initAxis);
+                        console.log(initAxis.length());
+                        console.log(initAxisAngle.w);
+                        pivot.rotateOnWorldAxis(initAxis, initAxisAngle.w);
+                    }
                 }
+
                 var original_cylinder = new THREE.Vector3(0, 1, 0);
                 cylinder.quaternion.setFromUnitVectors(original_cylinder, yax.clone().normalize());
 
